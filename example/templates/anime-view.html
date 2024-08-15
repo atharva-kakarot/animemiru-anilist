@@ -1,0 +1,190 @@
+<html>
+<head>
+    {% load static %}
+    <title>
+        Anime見る
+    </title>
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static " ico\apple-touch-icon.png" %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static " ico\favicon-32x32.png" %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static " ico\favicon-16x16.png" %}">
+    <link rel="manifest" href="{% static " ico\site.webmanifest" %}">
+    <link rel="stylesheet" href="{% static 'css/index.css'%}">
+</head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Mochiy+Pop+One&display=swap"
+    rel="stylesheet">
+
+<body>
+    <center>
+        <div id="navbar">
+            <a href={% url 'home' %}><span id="name-header"><span style="color: #ffd166;">Anime</span>見る</span></a>
+            <input id="input-box" placeholder="Search Anime">
+            <button id="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+        <div id="container">
+        </div>
+
+        <div id="anime-whole-div">
+            {% if anime_data.bannerImage == None %}
+            {% else %}
+            <img src={{ anime_data.bannerImage }} id="banner-image">
+            {% endif %}
+            <div id="title-div">
+                <table id="title-table">
+                    <tr>
+                        <td>Romaji:</td>
+                        <td><span id="anime-title">{{anime_data.title.romaji}}</span></td>
+                    </tr>
+                    <tr>
+                        <td>Japanese:</td>
+                        <td><span id="anime-title-jap">{{anime_data.title.native}}</span></td>
+                    </tr>
+                    <tr>
+                        <td>English:</td>
+                        <td><span id="anime-title-eng">{{anime_data.title.english}}</span></td>
+                    </tr>
+                </table>
+                <div id="genre-div">
+                        {% for genre in anime_data.genres %}
+                        <span class="genre-sub-div">{{genre}}</span>
+                        {% endfor %}
+                </div>
+            </div>
+            <div id="anime-outermost-details-div">
+                <div id="anime-details-main-div">
+                    <div id="image-container">
+                        <img src={{anime_data.coverImage.extraLarge}} id="main-image">
+                    </div>
+                    <div id="anime-stats-trailer-div">
+                        <div id="anime-stats-div">
+                            <h1 id="stats-header">Statistics</h1>
+                            <table id="anime-stats-table">
+                                <tr>
+                                    <td>Score:</td>
+                                    {% if anime_data.averageScore == None %}
+                                    <td><i class="fa-solid fa-star" style="color:gold"></i>&nbsp;N/A</td>
+                                    {% else %}
+                                    <td><i class="fa-solid fa-star" style="color:gold"></i>&nbsp;{{anime_data.averageScore}}% ({{score}})</td>
+                                    {% endif %}
+                                </tr>
+                                <tr>
+                                    <td>Popularity:</td>
+                                    <td><i class="fa-solid fa-heart" style="color:red"></i>&nbsp;{{anime_data.popularity}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Rank:</td>
+                                    <td><i class="fa-solid fa-chart-simple" style="color:lightgreen"></i>&nbsp;{{anime_data.favourites}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div id="anime-trailer-div">
+                            <h1 id="trailer-header">Trailer</h1>
+                            {% if anime_data.trailer.id == "" %}
+                            <span>N/A</span>
+                            {% else %}
+                            <iframe src="https://www.youtube.com/embed/{{anime_data.trailer.id}}" id="trailer"></iframe>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div id="anime-details-div">
+                        <h1 id="info-header">Information</h1>
+                        <table id="anime-info-table">
+                            <tr>
+                                <td>Type:</td>
+                                <td><i class="fa-solid fa-photo-film"></i>&nbsp;{{format}}</td>
+                            </tr>
+                            <tr>
+                                <td>Episodes:</td>
+                                <td><i class="fa-solid fa-tv"></i>&nbsp;{{episodes}}</td>
+                            </tr>
+                            <tr>
+                                <td>Duration:</td>
+                                <td><i class="fa-regular fa-clock"></i>&nbsp;{{episode_duration}} min</td>
+                            </tr>
+                            <tr>
+                                <td>Broadcast:</td>
+                                <td><i class="fa-solid fa-tower-broadcast"></i>&nbsp;{{start_date}} to {{end_date}}</td>
+                            </tr>
+                            <tr>
+                                <td>Status:</td>
+                                <td><i class="fa-solid fa-bars-progress"></i>&nbsp;{{status}}</td>
+                            </tr>
+                            <tr>
+                                <td>Source:</td>
+                                <td><i class="fa-brands fa-sourcetree"></i>&nbsp;{{source}}</td>
+                            </tr>
+                            <tr>
+                                <td>Studios:</td>
+                                <td><i class="fa-solid fa-building"></i>
+                                    {% for studio in anime_data.studios.nodes %}
+                                    {{studio.name}}{% if not forloop.last %},{% endif %}
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Season:</td>
+                                <td><i class="fa-regular fa-calendar"></i>&nbsp;{{season}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div id="synopsis-div">
+                    <h1 id="synopsis-header">Synopsis</h1>
+                    <p>{{description}}</p>
+                </div>
+                <div id="relations-div">
+                    <h1 id="relations-header">Related Anime</h1>
+                    {% if relation_length == 0 %}
+                    <p style="text-align: center">N/A</p>
+                    {% else %}
+                    <table id="relations-table">
+                        {% for related_anime in anime_data.relations.edges %}
+                        <tr>
+                            {% if related_anime.relationType == "ADAPTATION" %}
+                            <td>Adaptation:</td>
+                            {% elif related_anime.relationType == "PREQUEL" %}
+                            <td>Prequel:</td>
+                            {% elif related_anime.relationType == "SEQUEL" %}
+                            <td>Sequel:</td>
+                            {% elif related_anime.relationType == "SIDE_STORY" %}
+                            <td>Side Story:</td>
+                            {% elif related_anime.relationType == "PARENT" %}
+                            <td>Parent:</td>
+                            {% elif related_anime.relationType == "CHARACTER" %}
+                            <td>Character:</td>
+                            {% elif related_anime.relationType == "SUMMARY" %}
+                            <td>Summary:</td>
+                            {% elif related_anime.relationType == "ALTERNATIVE" %}
+                            <td>Alternative:</td>
+                            {% elif related_anime.relationType == "SPIN_OFF" %}
+                            <td>Spin Off:</td>
+                            {% elif related_anime.relationType == "OTHER" %}
+                            <td>Other:</td>
+                            {% elif related_anime.relationType == "SOURCE" %}
+                            <td>Source:</td>
+                            {% elif related_anime.relationType == "COMPILATION" %}
+                            <td>Compilation:</td>
+                            {% elif related_anime.relationType == "CONTAINS" %}
+                            <td>Contains:</td>
+                            {% else %}
+                            <td>{{related_anime.relationType}}:</td>
+                            {% endif %}
+                            <td><a href="id={{related_anime.node.id}}" id="relations-link">{{related_anime.node.title.romaji}}</a></td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                    {% endif %}
+                </div>
+            </div>
+        </div> 
+    </center>
+</body>
+<script src={% static 'js/anime-view.js'%}></script>
+</html>
